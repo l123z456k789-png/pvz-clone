@@ -101,7 +101,8 @@
   z-index: 200;
 }
 
-.modal-overlay.hidden {
+#instructions-modal.hidden,
+#reset-confirm-modal.hidden {
   display: none;
 }
 
