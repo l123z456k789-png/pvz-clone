@@ -1,0 +1,17 @@
+{
+  "name": "植物大战僵尸",
+  "short_name": "植物大战僵尸",
+  "description": "HTML5 Canvas 植物大战僵尸复刻版",
+  "start_url": ".",
+  "display": "standalone",
+  "orientation": "landscape",
+  "background_color": "#1a0a00",
+  "theme_color": "#1a0a00",
+  "icons": [
+    {
+      "src": "images/cards/plants/SunFlower.png",
+      "sizes": "72x74",
+      "type": "image/png"
+    }
+  ]
+}

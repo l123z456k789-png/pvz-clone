@@ -1,5 +1,5 @@
 /* ============================================================
-   植物大战僵尸 — UI 组件样式
+   植物大战僵尸 — UI 组件样式 v1.0.0
    ============================================================ */
 
 /* ---------- 开始界面 ---------- */
@@ -11,179 +11,209 @@
   font-family: "Segoe UI", "Microsoft YaHei", sans-serif;
 }
 
-#start-screen.hidden {
-  display: none;
-}
+#start-screen.hidden { display: none; }
 
 .start-inner {
-  text-align: center;
-  max-width: 520px;
-  padding: 20px;
+  text-align: center; max-width: 480px; padding: 24px 20px;
 }
 
+/* 标题 */
 .start-title {
-  font-size: clamp(32px, 6vw, 52px);
+  font-size: clamp(28px, 5vw, 44px);
   font-weight: bold;
-  color: #a0ff60;
-  text-shadow: 2px 2px 0 #206010, 0 0 30px rgba(120, 220, 60, 0.4);
-  margin-bottom: 6px;
-  letter-spacing: 2px;
+  color: #b8e870;
+  text-shadow: 1.5px 1.5px 0 #2a6020, 0 0 20px rgba(100, 200, 40, 0.25);
+  margin-bottom: 4px;
+  letter-spacing: 1.5px;
 }
 
+/* 副标题 */
 .start-subtitle {
-  font-size: clamp(14px, 2.5vw, 18px);
-  color: #c8b880;
-  margin-bottom: 28px;
+  font-size: clamp(13px, 2.2vw, 16px);
+  color: #c8b080;
+  margin-bottom: 6px;
 }
 
+/* 版本号 */
 .start-version {
-  font-size: 12px;
-  color: #8a7a50;
-  margin-bottom: 18px;
+  font-size: 11px; color: #7a6a40; margin-bottom: 22px;
 }
 
-.start-notice {
-  font-size: 11px;
-  color: #6a5a40;
-  margin-bottom: 24px;
-}
-
+/* 主按钮 */
 .start-btn {
-  display: block;
-  width: 220px;
-  margin: 0 auto 12px;
-  padding: 14px 0;
-  font-size: 18px;
-  font-weight: bold;
-  font-family: inherit;
-  border: 2px solid;
-  border-radius: 8px;
+  display: block; width: 240px; margin: 0 auto 10px;
+  padding: 15px 0; font-size: 19px; font-weight: bold;
+  font-family: inherit; border: 2px solid; border-radius: 10px;
   cursor: pointer;
   transition: transform 0.1s, box-shadow 0.1s;
   background: linear-gradient(180deg, #5cb830 0%, #3a8018 100%);
-  color: #fff;
-  border-color: #2a6010;
+  color: #fff; border-color: #2a6010;
   box-shadow: 0 4px 0 #205008, 0 6px 12px rgba(0,0,0,0.4);
+  min-height: 52px;
 }
 
-.start-btn:hover {
-  transform: translateY(-1px);
-  box-shadow: 0 5px 0 #205008, 0 8px 16px rgba(0,0,0,0.5);
-}
+.start-btn:hover { transform: translateY(-1px); box-shadow: 0 5px 0 #205008, 0 8px 16px rgba(0,0,0,0.5); }
+.start-btn:active { transform: translateY(2px); box-shadow: 0 2px 0 #205008, 0 3px 6px rgba(0,0,0,0.4); }
+.start-btn:focus-visible { outline: 2px solid #ffd21e; outline-offset: 2px; }
+.start-btn:disabled { opacity: 0.6; cursor: not-allowed; transform: none; }
 
-.start-btn:active {
-  transform: translateY(2px);
-  box-shadow: 0 2px 0 #205008, 0 3px 6px rgba(0,0,0,0.4);
-}
-
-.start-btn.muted {
-  font-size: 14px;
-  background: linear-gradient(180deg, #888 0%, #555 100%);
-  border-color: #444;
-  box-shadow: 0 4px 0 #333, 0 6px 12px rgba(0,0,0,0.3);
-}
-
+/* 次级按钮 (操作说明) */
 .start-btn.secondary {
   background: linear-gradient(180deg, #8a6a30 0%, #5a3e18 100%);
   border-color: #3a2010;
   box-shadow: 0 4px 0 #2a1808, 0 6px 12px rgba(0,0,0,0.4);
+  width: 200px; padding: 12px 0; font-size: 16px; min-height: 46px;
+}
+.start-btn.secondary:hover { box-shadow: 0 5px 0 #2a1808, 0 8px 16px rgba(0,0,0,0.5); }
+
+/* 工具按钮行 */
+.start-tools {
+  display: flex; justify-content: center; gap: 10px; margin-bottom: 16px;
+}
+.start-tool {
+  min-width: 48px; min-height: 48px;
+  background: rgba(0,0,0,0.3); border: 1px solid rgba(255,255,255,0.15);
+  border-radius: 8px; color: #d8c890; font-size: 13px;
+  cursor: pointer; display: flex; flex-direction: column;
+  align-items: center; justify-content: center; gap: 2px;
+  padding: 6px 12px; font-family: inherit;
+  transition: background 0.15s;
+}
+.start-tool:hover { background: rgba(255,255,255,0.1); }
+.start-tool:active { background: rgba(255,255,255,0.2); }
+.start-tool:focus-visible { outline: 2px solid #ffd21e; outline-offset: 2px; }
+.start-tool .tool-icon { font-size: 20px; line-height: 1; }
+.start-tool[aria-pressed="true"] .tool-icon { opacity: 1; }
+.start-tool[aria-pressed="false"] .tool-icon { opacity: 0.5; }
+
+/* 底部链接 */
+.start-links {
+  margin-top: 6px; font-size: 11px; color: #6a5a40;
+}
+.start-links a {
+  color: #8a7a50; text-decoration: none;
+}
+.start-links a:hover { color: #c8b060; }
+
+/* 首页免责 */
+.start-notice {
+  font-size: 10px; color: #5a4a30; margin-top: 10px;
 }
 
-.start-btn.secondary:hover {
-  box-shadow: 0 5px 0 #2a1808, 0 8px 16px rgba(0,0,0,0.5);
-}
-
-/* ---------- 操作说明弹窗 ---------- */
+/* ---------- 弹窗通用 ---------- */
 .modal-overlay {
   position: fixed; top: 0; left: 0; width: 100%; height: 100%;
   background: rgba(0,0,0,0.7);
   display: flex; align-items: center; justify-content: center;
   z-index: 200;
 }
-
 #instructions-modal.hidden,
-#reset-confirm-modal.hidden {
-  display: none;
-}
+#reset-confirm-modal.hidden,
+#about-modal.hidden { display: none; }
 
 .modal-panel {
   background: linear-gradient(180deg, #4a3820 0%, #2a1a08 100%);
-  border: 2px solid #8a6a30;
-  border-radius: 12px;
-  padding: 28px 24px 20px;
-  max-width: 460px;
-  width: 90%;
-  max-height: 80vh;
-  overflow-y: auto;
-  position: relative;
-  color: #e8d8b0;
-  box-shadow: 0 8px 32px rgba(0,0,0,0.6);
+  border: 2px solid #8a6a30; border-radius: 12px;
+  padding: 28px 24px 20px; max-width: 460px; width: 90%;
+  max-height: 80vh; overflow-y: auto; position: relative;
+  color: #e8d8b0; box-shadow: 0 8px 32px rgba(0,0,0,0.6);
 }
-
 .modal-title {
-  font-size: 22px;
-  font-weight: bold;
-  color: #ffd21e;
-  margin-bottom: 16px;
-  text-align: center;
+  font-size: 22px; font-weight: bold; color: #ffd21e;
+  margin-bottom: 16px; text-align: center;
 }
-
-.modal-section {
-  margin-bottom: 14px;
-}
-
-.modal-section h4 {
-  font-size: 14px;
-  color: #c8b060;
-  margin-bottom: 4px;
-}
-
-.modal-section p, .modal-section li {
-  font-size: 13px;
-  color: #c8b898;
-  line-height: 1.6;
-}
-
-.modal-section ul {
-  margin: 0; padding-left: 18px;
-}
-
 .modal-close {
   position: absolute; top: 8px; right: 14px;
-  background: none; border: none;
-  color: #c8a060; font-size: 24px;
-  cursor: pointer;
-  padding: 4px 8px;
-  line-height: 1;
-  font-family: inherit;
+  background: none; border: none; color: #c8a060;
+  font-size: 24px; cursor: pointer; padding: 4px 8px;
+  line-height: 1; font-family: inherit;
 }
+.modal-close:hover { color: #ffd21e; }
 
-.modal-close:hover {
-  color: #ffd21e;
+/* 操作说明 */
+.modal-section { margin-bottom: 14px; }
+.modal-section h4 { font-size: 14px; color: #c8b060; margin-bottom: 4px; }
+.modal-section p, .modal-section li { font-size: 13px; color: #c8b898; line-height: 1.6; }
+.modal-section ul { margin: 0; padding-left: 18px; }
+
+/* 关于项目 */
+.about-section { margin-bottom: 14px; }
+.about-section h4 { font-size: 14px; color: #c8b060; margin-bottom: 4px; }
+.about-section p { font-size: 13px; color: #c8b898; line-height: 1.6; }
+.about-section a { color: #d8c060; text-decoration: none; }
+.about-section a:hover { color: #ffd21e; }
+
+.about-setting-row {
+  display: flex; align-items: center; justify-content: space-between;
+  padding: 4px 0; border-bottom: 1px solid rgba(255,255,255,0.06);
 }
+.about-setting-row span { font-size: 13px; color: #c8b898; }
+.about-toggle {
+  min-width: 44px; min-height: 30px; padding: 4px 10px;
+  background: rgba(0,0,0,0.3); border: 1px solid rgba(255,255,255,0.15);
+  border-radius: 6px; color: #d8c890; font-size: 12px;
+  cursor: pointer; font-family: inherit;
+  transition: background 0.15s;
+}
+.about-toggle:hover { background: rgba(255,255,255,0.1); }
+
+.danger-zone {
+  margin-top: 18px; padding-top: 12px;
+  border-top: 1px solid rgba(200,60,30,0.4);
+}
+.danger-zone h4 { font-size: 14px; color: #e06040; margin-bottom: 6px; }
+.danger-zone p { font-size: 12px; color: #b89080; line-height: 1.5; margin-bottom: 8px; }
+.danger-btn {
+  display: inline-block; padding: 8px 18px;
+  background: linear-gradient(180deg, #c84030, #801810);
+  border: 1px solid #601010; border-radius: 6px;
+  color: #fff; font-size: 13px; cursor: pointer;
+  font-family: inherit; box-shadow: 0 3px 0 #401008;
+}
+.danger-btn:hover { box-shadow: 0 4px 0 #401008, 0 6px 12px rgba(0,0,0,0.4); }
+.danger-btn:active { transform: translateY(2px); box-shadow: 0 1px 0 #401008; }
 
 /* ---------- 手机提示 ---------- */
 #mobile-tip {
   position: fixed; bottom: 20px; left: 50%; transform: translateX(-50%);
   background: rgba(0,0,0,0.85); color: #ffd21e;
-  padding: 10px 20px; border-radius: 8px;
-  font-size: 13px; z-index: 150;
-  font-family: "Microsoft YaHei", "Segoe UI", sans-serif;
-  text-align: center;
-  border: 1px solid rgba(255,210,30,0.3);
-  max-width: 90%;
+  padding: 10px 20px; border-radius: 8px; font-size: 13px;
+  z-index: 150; font-family: "Microsoft YaHei", "Segoe UI", sans-serif;
+  text-align: center; border: 1px solid rgba(255,210,30,0.3); max-width: 90%;
 }
-
-#mobile-tip.hidden {
-  display: none;
-}
-
+#mobile-tip.hidden { display: none; }
 #mobile-tip .tip-close {
-  background: none; border: none;
-  color: #c8a060; font-size: 16px;
-  cursor: pointer; margin-left: 8px;
+  background: none; border: none; color: #c8a060;
+  font-size: 16px; cursor: pointer; margin-left: 8px;
   vertical-align: middle; padding: 0 4px;
 }
+
+/* iPhone 添加到主屏幕提示 */
+#iphone-pwa-tip {
+  position: fixed; bottom: 80px; left: 50%; transform: translateX(-50%);
+  background: rgba(0,0,0,0.88); color: #ffd21e;
+  padding: 12px 20px; border-radius: 8px; font-size: 12px;
+  z-index: 151; font-family: "Microsoft YaHei", "Segoe UI", sans-serif;
+  text-align: center; border: 1px solid rgba(255,210,30,0.25); max-width: 88%;
+}
+#iphone-pwa-tip.hidden { display: none; }
+#iphone-pwa-tip .tip-close {
+  background: none; border: none; color: #c8a060;
+  font-size: 16px; cursor: pointer; margin-left: 8px;
+  vertical-align: middle; padding: 0 4px;
+}
+
+/* 旋转手机提示 */
+#rotate-hint {
+  position: fixed; top: 50%; left: 50%; transform: translate(-50%,-50%);
+  background: rgba(0,0,0,0.8); color: #ffd21e;
+  padding: 14px 24px; border-radius: 10px; font-size: 14px;
+  z-index: 180; pointer-events: none;
+  font-family: "Microsoft YaHei", "Segoe UI", sans-serif;
+  text-align: center; border: 1px solid rgba(255,210,30,0.2);
+  transition: opacity 0.3s;
+}
+#rotate-hint.hidden { display: none; }
 
 /* ---------- 游戏工具栏 ---------- */
 #game-toolbar {
@@ -191,72 +221,88 @@
   display: flex; gap: 6px; z-index: 50;
   opacity: 0.85; transition: opacity 0.2s;
 }
-
-#game-toolbar:hover {
-  opacity: 1;
-}
-
-#game-toolbar.hidden {
-  display: none;
-}
+#game-toolbar:hover { opacity: 1; }
+#game-toolbar.hidden { display: none; }
 
 .tool-btn {
-  width: 34px; height: 34px;
-  background: rgba(0,0,0,0.5);
-  border: 1px solid rgba(255,255,255,0.2);
-  border-radius: 6px;
-  color: #e8d8b0; font-size: 17px;
-  cursor: pointer;
-  display: flex; align-items: center; justify-content: center;
-  padding: 0;
-  line-height: 1;
+  width: 36px; height: 36px;
+  background: rgba(0,0,0,0.5); border: 1px solid rgba(255,255,255,0.2);
+  border-radius: 6px; color: #e8d8b0; font-size: 17px;
+  cursor: pointer; display: flex; align-items: center;
+  justify-content: center; padding: 0; line-height: 1;
   transition: background 0.15s;
 }
-
-.tool-btn:hover {
-  background: rgba(255,255,255,0.15);
-}
-
-.tool-btn:active {
-  background: rgba(255,255,255,0.25);
-}
+.tool-btn:hover { background: rgba(255,255,255,0.15); }
+.tool-btn:active { background: rgba(255,255,255,0.25); }
 
 /* ---------- 页脚 ---------- */
 #site-footer {
   position: fixed; bottom: 0; left: 0; width: 100%;
   text-align: center; padding: 4px 8px;
-  font-size: 10px; color: #5a4a30;
+  font-size: 10px; color: #6a5a38;
   font-family: "Microsoft YaHei", "Segoe UI", sans-serif;
-  z-index: 40;
-  pointer-events: none;
+  z-index: 40; pointer-events: none;
+  background: rgba(0,0,0,0.2);
 }
-
 #site-footer a {
-  color: #7a6a40;
-  pointer-events: auto;
-  text-decoration: none;
+  color: #8a7a50; pointer-events: auto; text-decoration: none;
+}
+#site-footer a:hover { color: #c8b060; }
+
+/* ---------- 沉浸模式 ---------- */
+.game-immersive-mode #wrap {
+  position: fixed; top: 0; left: 0;
+  width: 100%; height: 100dvh; min-height: 100svh;
+  z-index: 90; background: #1a0a00;
+}
+body.game-active {
+  overflow: hidden; overscroll-behavior: none;
 }
 
-#site-footer a:hover {
-  color: #c8b060;
+/* 退出沉浸按钮 */
+#exit-immersive-btn {
+  position: fixed; top: 8px; left: 8px;
+  z-index: 95; display: none;
+  background: rgba(0,0,0,0.6); border: 1px solid rgba(255,255,255,0.2);
+  border-radius: 6px; color: #e8d8b0; font-size: 13px;
+  cursor: pointer; padding: 6px 12px; font-family: inherit;
 }
+#exit-immersive-btn.visible { display: block; }
 
 /* ---------- 通用 ---------- */
-#start-screen .start-btn,
-#start-screen .start-btn.secondary {
-  font-family: "Microsoft YaHei", "Segoe UI", sans-serif;
-}
-
 @media (prefers-reduced-motion: reduce) {
-  .start-btn {
-    transition: none;
-  }
+  .start-btn { transition: none; }
+  #rotate-hint { transition: none; }
 }
 
 /* 移动端适配 */
 @media (max-width: 600px) {
-  .start-inner { padding: 12px; }
-  .start-btn { width: 180px; padding: 12px 0; font-size: 16px; }
+  .start-inner { padding: 14px 12px; }
+  .start-btn { width: 200px; padding: 14px 0; font-size: 17px; min-height: 48px; }
+  .start-btn.secondary { width: 170px; min-height: 42px; }
   .modal-panel { padding: 20px 14px 16px; max-height: 85vh; }
-  .tool-btn { width: 30px; height: 30px; font-size: 15px; }
+  .start-tool { min-width: 44px; min-height: 44px; font-size: 11px; }
+  .start-tool .tool-icon { font-size: 18px; }
+}
+
+/* 安全区域 */
+@supports (padding: env(safe-area-inset-top)) {
+  #game-toolbar {
+    top: calc(8px + env(safe-area-inset-top));
+    right: calc(8px + env(safe-area-inset-right));
+  }
+  #site-footer {
+    padding-bottom: calc(4px + env(safe-area-inset-bottom));
+  }
+  #mobile-tip {
+    bottom: calc(20px + env(safe-area-inset-bottom));
+  }
+  #exit-immersive-btn {
+    top: calc(8px + env(safe-area-inset-top));
+    left: calc(8px + env(safe-area-inset-left));
+  }
+  .start-inner {
+    padding-top: calc(24px + env(safe-area-inset-top));
+    padding-bottom: calc(24px + env(safe-area-inset-bottom));
+  }
 }

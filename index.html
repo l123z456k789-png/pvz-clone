@@ -2,7 +2,12 @@
 <html lang="zh">
 <head>
 <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<meta name="theme-color" content="#1a0a00">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<meta name="apple-mobile-web-app-title" content="植物大战僵尸">
+<link rel="manifest" href="manifest.webmanifest">
 <title>植物大战僵尸</title>
 <style>
 * { margin: 0; padding: 0; box-sizing: border-box; }
@@ -39,12 +44,19 @@ html, body {
 <div id="start-screen">
   <div class="start-inner">
     <div class="start-title">植物大战僵尸</div>
-    <div class="start-subtitle">HTML5 Canvas 复刻版</div>
+    <div class="start-subtitle">守住草坪，击退僵尸</div>
     <div class="start-version" data-version>v1.0.0</div>
-    <button id="btn-start" class="start-btn" title="开始游戏">▶ 开始游戏</button>
-    <button id="btn-help" class="start-btn secondary" title="查看操作说明">📖 操作说明</button>
-    <button id="btn-github" class="start-btn secondary" title="查看 GitHub 源码">🔗 GitHub 源码</button>
-    <button id="btn-reset" class="start-btn muted" title="重置所有游戏进度">🔄 重置存档</button>
+    <button id="btn-start" class="start-btn" title="开始游戏">开始游戏</button>
+    <button id="btn-help" class="start-btn secondary" title="查看操作说明">操作说明</button>
+    <div class="start-tools">
+      <button id="btn-start-mute" class="start-tool" title="静音 / 取消静音" aria-label="切换静音" aria-pressed="true"><span class="tool-icon">🔊</span>声音</button>
+      <button id="btn-start-fullscreen" class="start-tool" title="全屏 / 沉浸模式" aria-label="切换全屏" aria-pressed="false"><span class="tool-icon">⛶</span>全屏</button>
+    </div>
+    <div class="start-links">
+      <a href="https://github.com/l123z456k789-png/pvz-clone" target="_blank" rel="noopener">GitHub 源码</a>
+      ·
+      <a href="#" id="btn-about">关于项目</a>
+    </div>
     <div class="start-notice">非官方 · 非商业项目 · 仅供学习与技术演示</div>
   </div>
 </div>
@@ -59,11 +71,17 @@ html, body {
   <div id="pct" style="font-size:14px">0%</div>
 </div>
 
+<!-- ========== 退出沉浸模式 ========== -->
+<button id="exit-immersive-btn" title="退出沉浸模式">← 退出</button>
+
 <!-- ========== 游戏工具栏 ========== -->
 <div id="game-toolbar" class="hidden">
   <button id="btn-fullscreen" class="tool-btn" title="切换全屏" aria-label="切换全屏">⛶</button>
   <button id="btn-mute" class="tool-btn" title="切换静音" aria-label="切换静音">🔊</button>
 </div>
+
+<!-- ========== 旋转提示 ========== -->
+<div id="rotate-hint" class="hidden">↻ 请将手机旋转至横屏以获得完整视野</div>
 
 <!-- ========== 操作说明弹窗 ========== -->
 <div id="instructions-modal" class="hidden" role="dialog" aria-modal="true" aria-label="操作说明">
@@ -102,12 +120,66 @@ html, body {
         </ul>
       </div>
       <div class="modal-section">
+        <h4>📱 手机游玩</h4>
+        <ul>
+          <li>建议横屏游玩以获得完整视野</li>
+          <li>点击"开始游戏"或"全屏"可尝试进入全屏模式</li>
+          <li>部分手机浏览器不支持隐藏地址栏，系统会启用沉浸模式</li>
+          <li>iPhone 用户可使用 Safari "添加到主屏幕"，从桌面打开体验更佳</li>
+          <li>选中植物后点击草坪格子放置</li>
+          <li>再次点击已选中卡牌可取消选择</li>
+        </ul>
+      </div>
+      <div class="modal-section">
         <h4>💾 存档机制</h4>
         <p>游戏自动使用浏览器 localStorage 保存关卡进度。通关后自动解锁下一关，刷新页面后进度保留。</p>
       </div>
       <div class="modal-section">
         <h4>🔊 音效</h4>
         <p>使用 Web Audio API 生成合成音效，点击右上角喇叭按钮可随时静音/恢复。</p>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ========== 关于项目弹窗 ========== -->
+<div id="about-modal" class="hidden" role="dialog" aria-modal="true" aria-label="关于项目">
+  <div class="modal-overlay">
+    <div class="modal-panel">
+      <button class="modal-close" title="关闭" aria-label="关闭">&times;</button>
+      <div class="modal-title">关于项目</div>
+      <div class="about-section">
+        <h4>版本</h4>
+        <p data-version>v1.0.0</p>
+      </div>
+      <div class="about-section">
+        <h4>技术</h4>
+        <p>使用原生 HTML、CSS、JavaScript 和 Canvas 实现，无需任何外部框架或依赖。</p>
+      </div>
+      <div class="about-section">
+        <h4>源码</h4>
+        <p><a href="https://github.com/l123z456k789-png/pvz-clone" target="_blank" rel="noopener">github.com/l123z456k789-png/pvz-clone</a></p>
+      </div>
+      <div class="about-section">
+        <h4>设置</h4>
+        <div class="about-setting-row">
+          <span>声音</span>
+          <button id="about-mute-toggle" class="about-toggle" title="切换声音">🔊 已开启</button>
+        </div>
+        <div class="about-setting-row">
+          <span>全屏模式</span>
+          <button id="about-fullscreen-toggle" class="about-toggle" title="切换全屏">⛶ 切换</button>
+        </div>
+      </div>
+      <div class="about-section">
+        <h4>免责声明</h4>
+        <p>本项目为非商业学习与技术演示项目，与 Electronic Arts、PopCap Games 无隶属或授权关系。Plants vs. Zombies 相关名称、角色和美术资源归其权利人所有。</p>
+        <p style="font-size:11px;color:#9a8a60;">This is a non-commercial fan project created for learning and technical demonstration. It is not affiliated with or endorsed by Electronic Arts or PopCap Games. Plants vs. Zombies and related assets belong to their respective rights holders.</p>
+      </div>
+      <div class="danger-zone">
+        <h4>⚠ 危险操作</h4>
+        <p>重置存档将删除所有关卡进度，且无法恢复。</p>
+        <button id="about-reset-btn" class="danger-btn" title="重置存档">重置存档</button>
       </div>
     </div>
   </div>
@@ -129,16 +201,21 @@ html, body {
 
 <!-- ========== 手机端横屏提示 ========== -->
 <div id="mobile-tip" class="hidden">
-  📱 建议横屏游玩，以获得更完整的游戏视野。
+  建议横屏游玩，以获得更完整的游戏视野。
+  <button class="tip-close" title="关闭提示" aria-label="关闭">✕</button>
+</div>
+
+<!-- ========== iPhone 添加到主屏幕提示 ========== -->
+<div id="iphone-pwa-tip" class="hidden">
+  当前浏览器不支持网页游戏完全隐藏浏览器栏。可使用 Safari 的"添加到主屏幕"，再从桌面图标打开，以获得更接近全屏的体验。
   <button class="tip-close" title="关闭提示" aria-label="关闭">✕</button>
 </div>
 
 <!-- ========== 页脚 ========== -->
 <div id="site-footer">
   <span data-version>v1.0.0</span> ·
-  非商业学习项目 · 与 EA / PopCap Games 无隶属或授权关系 ·
-  Plants vs. Zombies assets © their respective rights holders ·
-  <a href="https://github.com/l123z456k789-png/pvz-clone" target="_blank" rel="noopener">GitHub</a>
+  <a href="https://github.com/l123z456k789-png/pvz-clone" target="_blank" rel="noopener">GitHub</a> ·
+  非商业学习项目 · 与 EA / PopCap Games 无隶属或授权关系
 </div>
 
 <script>
