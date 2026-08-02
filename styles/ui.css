@@ -1,0 +1,261 @@
+/* ============================================================
+   植物大战僵尸 — UI 组件样式
+   ============================================================ */
+
+/* ---------- 开始界面 ---------- */
+#start-screen {
+  position: fixed; top: 0; left: 0; width: 100%; height: 100%;
+  background: radial-gradient(ellipse at center, #3a2a10 0%, #1a0a00 100%);
+  display: flex; align-items: center; justify-content: center;
+  z-index: 100; flex-direction: column;
+  font-family: "Segoe UI", "Microsoft YaHei", sans-serif;
+}
+
+#start-screen.hidden {
+  display: none;
+}
+
+.start-inner {
+  text-align: center;
+  max-width: 520px;
+  padding: 20px;
+}
+
+.start-title {
+  font-size: clamp(32px, 6vw, 52px);
+  font-weight: bold;
+  color: #a0ff60;
+  text-shadow: 2px 2px 0 #206010, 0 0 30px rgba(120, 220, 60, 0.4);
+  margin-bottom: 6px;
+  letter-spacing: 2px;
+}
+
+.start-subtitle {
+  font-size: clamp(14px, 2.5vw, 18px);
+  color: #c8b880;
+  margin-bottom: 28px;
+}
+
+.start-version {
+  font-size: 12px;
+  color: #8a7a50;
+  margin-bottom: 18px;
+}
+
+.start-notice {
+  font-size: 11px;
+  color: #6a5a40;
+  margin-bottom: 24px;
+}
+
+.start-btn {
+  display: block;
+  width: 220px;
+  margin: 0 auto 12px;
+  padding: 14px 0;
+  font-size: 18px;
+  font-weight: bold;
+  font-family: inherit;
+  border: 2px solid;
+  border-radius: 8px;
+  cursor: pointer;
+  transition: transform 0.1s, box-shadow 0.1s;
+  background: linear-gradient(180deg, #5cb830 0%, #3a8018 100%);
+  color: #fff;
+  border-color: #2a6010;
+  box-shadow: 0 4px 0 #205008, 0 6px 12px rgba(0,0,0,0.4);
+}
+
+.start-btn:hover {
+  transform: translateY(-1px);
+  box-shadow: 0 5px 0 #205008, 0 8px 16px rgba(0,0,0,0.5);
+}
+
+.start-btn:active {
+  transform: translateY(2px);
+  box-shadow: 0 2px 0 #205008, 0 3px 6px rgba(0,0,0,0.4);
+}
+
+.start-btn.muted {
+  font-size: 14px;
+  background: linear-gradient(180deg, #888 0%, #555 100%);
+  border-color: #444;
+  box-shadow: 0 4px 0 #333, 0 6px 12px rgba(0,0,0,0.3);
+}
+
+.start-btn.secondary {
+  background: linear-gradient(180deg, #8a6a30 0%, #5a3e18 100%);
+  border-color: #3a2010;
+  box-shadow: 0 4px 0 #2a1808, 0 6px 12px rgba(0,0,0,0.4);
+}
+
+.start-btn.secondary:hover {
+  box-shadow: 0 5px 0 #2a1808, 0 8px 16px rgba(0,0,0,0.5);
+}
+
+/* ---------- 操作说明弹窗 ---------- */
+.modal-overlay {
+  position: fixed; top: 0; left: 0; width: 100%; height: 100%;
+  background: rgba(0,0,0,0.7);
+  display: flex; align-items: center; justify-content: center;
+  z-index: 200;
+}
+
+.modal-overlay.hidden {
+  display: none;
+}
+
+.modal-panel {
+  background: linear-gradient(180deg, #4a3820 0%, #2a1a08 100%);
+  border: 2px solid #8a6a30;
+  border-radius: 12px;
+  padding: 28px 24px 20px;
+  max-width: 460px;
+  width: 90%;
+  max-height: 80vh;
+  overflow-y: auto;
+  position: relative;
+  color: #e8d8b0;
+  box-shadow: 0 8px 32px rgba(0,0,0,0.6);
+}
+
+.modal-title {
+  font-size: 22px;
+  font-weight: bold;
+  color: #ffd21e;
+  margin-bottom: 16px;
+  text-align: center;
+}
+
+.modal-section {
+  margin-bottom: 14px;
+}
+
+.modal-section h4 {
+  font-size: 14px;
+  color: #c8b060;
+  margin-bottom: 4px;
+}
+
+.modal-section p, .modal-section li {
+  font-size: 13px;
+  color: #c8b898;
+  line-height: 1.6;
+}
+
+.modal-section ul {
+  margin: 0; padding-left: 18px;
+}
+
+.modal-close {
+  position: absolute; top: 8px; right: 14px;
+  background: none; border: none;
+  color: #c8a060; font-size: 24px;
+  cursor: pointer;
+  padding: 4px 8px;
+  line-height: 1;
+  font-family: inherit;
+}
+
+.modal-close:hover {
+  color: #ffd21e;
+}
+
+/* ---------- 手机提示 ---------- */
+#mobile-tip {
+  position: fixed; bottom: 20px; left: 50%; transform: translateX(-50%);
+  background: rgba(0,0,0,0.85); color: #ffd21e;
+  padding: 10px 20px; border-radius: 8px;
+  font-size: 13px; z-index: 150;
+  font-family: "Microsoft YaHei", "Segoe UI", sans-serif;
+  text-align: center;
+  border: 1px solid rgba(255,210,30,0.3);
+  max-width: 90%;
+}
+
+#mobile-tip.hidden {
+  display: none;
+}
+
+#mobile-tip .tip-close {
+  background: none; border: none;
+  color: #c8a060; font-size: 16px;
+  cursor: pointer; margin-left: 8px;
+  vertical-align: middle; padding: 0 4px;
+}
+
+/* ---------- 游戏工具栏 ---------- */
+#game-toolbar {
+  position: fixed; top: 8px; right: 8px;
+  display: flex; gap: 6px; z-index: 50;
+  opacity: 0.85; transition: opacity 0.2s;
+}
+
+#game-toolbar:hover {
+  opacity: 1;
+}
+
+#game-toolbar.hidden {
+  display: none;
+}
+
+.tool-btn {
+  width: 34px; height: 34px;
+  background: rgba(0,0,0,0.5);
+  border: 1px solid rgba(255,255,255,0.2);
+  border-radius: 6px;
+  color: #e8d8b0; font-size: 17px;
+  cursor: pointer;
+  display: flex; align-items: center; justify-content: center;
+  padding: 0;
+  line-height: 1;
+  transition: background 0.15s;
+}
+
+.tool-btn:hover {
+  background: rgba(255,255,255,0.15);
+}
+
+.tool-btn:active {
+  background: rgba(255,255,255,0.25);
+}
+
+/* ---------- 页脚 ---------- */
+#site-footer {
+  position: fixed; bottom: 0; left: 0; width: 100%;
+  text-align: center; padding: 4px 8px;
+  font-size: 10px; color: #5a4a30;
+  font-family: "Microsoft YaHei", "Segoe UI", sans-serif;
+  z-index: 40;
+  pointer-events: none;
+}
+
+#site-footer a {
+  color: #7a6a40;
+  pointer-events: auto;
+  text-decoration: none;
+}
+
+#site-footer a:hover {
+  color: #c8b060;
+}
+
+/* ---------- 通用 ---------- */
+#start-screen .start-btn,
+#start-screen .start-btn.secondary {
+  font-family: "Microsoft YaHei", "Segoe UI", sans-serif;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .start-btn {
+    transition: none;
+  }
+}
+
+/* 移动端适配 */
+@media (max-width: 600px) {
+  .start-inner { padding: 12px; }
+  .start-btn { width: 180px; padding: 12px 0; font-size: 16px; }
+  .modal-panel { padding: 20px 14px 16px; max-height: 85vh; }
+  .tool-btn { width: 30px; height: 30px; font-size: 15px; }
+}

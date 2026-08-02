@@ -31,14 +31,116 @@ html, body {
   transition: width 0.1s;
 }
 </style>
+<link rel="stylesheet" href="styles/ui.css">
 </head>
 <body>
+
+<!-- ========== 开始界面 ========== -->
+<div id="start-screen">
+  <div class="start-inner">
+    <div class="start-title">植物大战僵尸</div>
+    <div class="start-subtitle">HTML5 Canvas 复刻版</div>
+    <div class="start-version" data-version>v1.0.0</div>
+    <button id="btn-start" class="start-btn" title="开始游戏">▶ 开始游戏</button>
+    <button id="btn-help" class="start-btn secondary" title="查看操作说明">📖 操作说明</button>
+    <button id="btn-github" class="start-btn secondary" title="查看 GitHub 源码">🔗 GitHub 源码</button>
+    <button id="btn-reset" class="start-btn muted" title="重置所有游戏进度">🔄 重置存档</button>
+    <div class="start-notice">非官方 · 非商业项目 · 仅供学习与技术演示</div>
+  </div>
+</div>
+
+<!-- ========== 游戏画布 ========== -->
 <div id="wrap"><canvas id="game" width="900" height="600"></canvas></div>
+
+<!-- ========== 加载进度 ========== -->
 <div id="loading">
   <div>🌻 加载资源中...</div>
   <div class="bar"><div id="prog" style="width:0%"></div></div>
   <div id="pct" style="font-size:14px">0%</div>
 </div>
+
+<!-- ========== 游戏工具栏 ========== -->
+<div id="game-toolbar" class="hidden">
+  <button id="btn-fullscreen" class="tool-btn" title="切换全屏" aria-label="切换全屏">⛶</button>
+  <button id="btn-mute" class="tool-btn" title="切换静音" aria-label="切换静音">🔊</button>
+</div>
+
+<!-- ========== 操作说明弹窗 ========== -->
+<div id="instructions-modal" class="hidden" role="dialog" aria-modal="true" aria-label="操作说明">
+  <div class="modal-overlay">
+    <div class="modal-panel">
+      <button class="modal-close" title="关闭" aria-label="关闭">&times;</button>
+      <div class="modal-title">📖 操作说明</div>
+      <div class="modal-section">
+        <h4>🖱 鼠标操作</h4>
+        <ul>
+          <li><strong>收集阳光：</strong>点击阳光图标收集阳光值</li>
+          <li><strong>选择植物：</strong>点击上方植物卡牌选中</li>
+          <li><strong>放置植物：</strong>选中后点击草坪格子种植</li>
+          <li><strong>取消选择：</strong>点击卡牌右侧空白区域或按 ESC</li>
+          <li><strong>铲除植物：</strong>点击右侧铲子按钮（或按 Q 键），再点击植物</li>
+        </ul>
+      </div>
+      <div class="modal-section">
+        <h4>⌨ 键盘快捷键</h4>
+        <ul>
+          <li><strong>1-9：</strong>选择对应植物卡牌</li>
+          <li><strong>ESC：</strong>取消植物选择 / 取消铲子模式 / 关闭弹窗</li>
+          <li><strong>空格：</strong>暂停 / 继续游戏</li>
+          <li><strong>P：</strong>暂停 / 继续游戏</li>
+          <li><strong>Q：</strong>切换铲子模式</li>
+          <li><strong>Enter / 空格：</strong>开始关卡 / 进入下一关</li>
+        </ul>
+      </div>
+      <div class="modal-section">
+        <h4>📱 触屏操作</h4>
+        <ul>
+          <li>点击阳光收集</li>
+          <li>点击卡牌选择植物</li>
+          <li>点击草坪格子种植</li>
+          <li>点击铲子按钮铲除植物</li>
+        </ul>
+      </div>
+      <div class="modal-section">
+        <h4>💾 存档机制</h4>
+        <p>游戏自动使用浏览器 localStorage 保存关卡进度。通关后自动解锁下一关，刷新页面后进度保留。</p>
+      </div>
+      <div class="modal-section">
+        <h4>🔊 音效</h4>
+        <p>使用 Web Audio API 生成合成音效，点击右上角喇叭按钮可随时静音/恢复。</p>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ========== 重置存档确认 ========== -->
+<div id="reset-confirm-modal" class="hidden" role="dialog" aria-modal="true" aria-label="重置存档确认">
+  <div class="modal-overlay">
+    <div class="modal-panel" style="max-width:360px; text-align:center;">
+      <div class="modal-title">⚠ 重置存档</div>
+      <p style="color:#c8b898; font-size:14px; margin-bottom:18px; line-height:1.6;">
+        此操作会删除本游戏的关卡进度和设置，且无法恢复。<br>确定继续吗？
+      </p>
+      <button class="start-btn secondary btn-cancel" style="display:inline-block; width:100px; margin:0 8px;">取消</button>
+      <button class="start-btn btn-confirm" style="display:inline-block; width:100px; margin:0 8px; background:linear-gradient(180deg,#c84030,#801810); border-color:#601010; box-shadow:0 4px 0 #401008,0 6px 12px rgba(0,0,0,0.4);">确认重置</button>
+    </div>
+  </div>
+</div>
+
+<!-- ========== 手机端横屏提示 ========== -->
+<div id="mobile-tip" class="hidden">
+  📱 建议横屏游玩，以获得更完整的游戏视野。
+  <button class="tip-close" title="关闭提示" aria-label="关闭">✕</button>
+</div>
+
+<!-- ========== 页脚 ========== -->
+<div id="site-footer">
+  <span data-version>v1.0.0</span> ·
+  非商业学习项目 · 与 EA / PopCap Games 无隶属或授权关系 ·
+  Plants vs. Zombies assets © their respective rights holders ·
+  <a href="https://github.com/l123z456k789-png/pvz-clone" target="_blank" rel="noopener">GitHub</a>
+</div>
+
 <script>
 // ============================================================
 //  植物大战僵尸 — 完整版
@@ -181,7 +283,7 @@ let audioCtx = null;
 function initAudio(){ if (!audioCtx) { try { audioCtx = new (window.AudioContext || window.webkitAudioContext)(); } catch(e){} } }
 
 function playTone(freq, type, duration, vol, glideTo){
-  if (!audioCtx) return;
+  if (!audioCtx || window._audioMuted) return;
   const t = audioCtx.currentTime;
   const osc = audioCtx.createOscillator();
   const gain = audioCtx.createGain();
@@ -1160,5 +1262,6 @@ function loop(now){
 }
 requestAnimationFrame(loop);
 </script>
+<script src="scripts/ui.js"></script>
 </body>
 </html>
