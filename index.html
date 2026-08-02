@@ -50,7 +50,7 @@ html, body {
     <button id="btn-help" class="start-btn secondary" title="查看操作说明">操作说明</button>
     <div class="start-tools">
       <button id="btn-start-mute" class="start-tool" title="静音 / 取消静音" aria-label="切换静音" aria-pressed="true"><span class="tool-icon">🔊</span>声音</button>
-      <button id="btn-start-fullscreen" class="start-tool" title="全屏 / 沉浸模式" aria-label="切换全屏" aria-pressed="false"><span class="tool-icon">⛶</span>全屏</button>
+      <button id="btn-start-fullscreen" class="start-tool" title="全屏 / 沉浸模式" aria-label="切换全屏" aria-pressed="false"><span class="tool-icon">⛶</span><span class="tool-label">全屏</span></button>
     </div>
     <div class="start-links">
       <a href="https://github.com/l123z456k789-png/pvz-clone" target="_blank" rel="noopener">GitHub 源码</a>
@@ -211,6 +211,20 @@ html, body {
   <button class="tip-close" title="关闭提示" aria-label="关闭">✕</button>
 </div>
 
+<!-- ========== 微信浏览器引导弹窗 ========== -->
+<div id="wechat-modal" class="hidden" role="dialog" aria-modal="true" aria-label="微信环境提示">
+  <div class="modal-overlay">
+    <div class="modal-panel" style="max-width:380px;text-align:center;">
+      <button class="modal-close" title="关闭" aria-label="关闭" onclick="document.getElementById('wechat-modal').classList.add('hidden')">&times;</button>
+      <div class="modal-title">微信内游玩提示</div>
+      <p style="color:#c8b898;font-size:13px;line-height:1.7;margin-bottom:14px;">当前在<strong>微信内置浏览器</strong>中，微信可能不允许网页游戏进入真正全屏。<br><br><strong>建议操作：</strong><br>1. 点击右上角 <strong>"···"</strong><br>2. 选择 <strong>"在浏览器打开"</strong><br>3. 在系统浏览器中享受完整全屏体验</p>
+      <button id="wechat-copy-btn" class="start-btn secondary" style="display:inline-block;width:140px;margin:0 4px 8px;" onclick="copyGameURL()">复制网址</button>
+      <button class="start-btn" style="display:inline-block;width:120px;margin:0 4px 8px;" onclick="document.getElementById('wechat-modal').classList.add('hidden')">我知道了</button>
+      <p style="font-size:11px;color:#8a7a50;margin-top:6px;">游戏仍可正常游玩，已启用沉浸布局。</p>
+    </div>
+  </div>
+</div>
+
 <!-- ========== 页脚 ========== -->
 <div id="site-footer">
   <span data-version>v1.0.0</span> ·
@@ -261,6 +275,15 @@ const PLANTS = {
 };
 const SEEDS = ["sunflower","peashooter","wallnut","potatomine","snowpea","repeater","cherry","chomper","gatlingpea"];
 
+const PLANT_ASSET_KEYS = { sunflower:"sunflower", peashooter:"peashooter", snowpea:"peashooter", wallnut:"wallnut", cherry:"cherrybomb", repeater:"repeater", potatomine:"potatomine", chomper:"chomper", gatlingpea:"gatlingpea" };
+function getPlantSpriteKey(p){
+  if (p.type === "snowpea") return "peashooter";
+  if (p.type === "gatlingpea") return "gatlingpea";
+  if (p.type === "chomper"){ if (p.digestTimer > 0) return "chomper_digest"; if (p.eatingAnim > 0) return "chomper_attack"; return "chomper"; }
+  return PLANT_ASSET_KEYS[p.type] || p.type;
+}
+function getPlantCardKey(type){ return PLANT_ASSET_KEYS[type] || type; }
+
 // ---------- 僵尸数据 ----------
 const ZTYPES = {
   normal:  { name:"普通僵尸",   hp:200, speed:14 },
@@ -293,9 +316,9 @@ let loadedCount = 0, totalCount = 0;
 function loadImg(url){ totalCount++; const i = new Image(); i.src = url;
   i.onload = i.onerror = () => { loadedCount++; updateLoadUI(); }; return i; }
 
-function frameURL(path, n, pad){ return BASE + path + (String(n).padStart(pad||2,'0')) + '.png'; }
+function frameURL(path, n, pad, ext){ return BASE + path + (String(n).padStart(pad||2,'0')) + (ext||'.png'); }
 
-// 植物精灵（potatoMine 没有精灵图，不加载）
+// 植物精灵
 const spriteDefs = {
   sunflower:       { path:'plants/sunflower/idle/idle_',         frames:18 },
   peashooter:      { path:'plants/peashooter/idle/idle_',        frames:8 },
@@ -307,6 +330,10 @@ const spriteDefs = {
   chomper:         { path:'plants/chomper/idle/idle_',           frames:13 },
   chomper_attack:  { path:'plants/chomper/attack/attack_',       frames:9 },
   chomper_digest:  { path:'plants/chomper/digest/digest_',       frames:6 },
+  potatomine_buried:    { path:'plants/potatomine/buried',       frames:1, ext:'.svg' },
+  potatomine_rising:    { path:'plants/potatomine/rising',       frames:1, ext:'.svg' },
+  potatomine_armed:     { path:'plants/potatomine/armed',        frames:1, ext:'.svg' },
+  potatomine_explosion: { path:'plants/potatomine/explosion',    frames:1, ext:'.svg' },
 };
 // 僵尸精灵
 const zombieDefs = {
@@ -323,12 +350,14 @@ const cardDefs = {
   cherrybomb: 'cards/plants/CherryBomb.png',
   chomper:    'cards/plants/Chomper.png',
   gatlingpea: 'cards/plants/GatlingPea.png',
+  potatomine: 'cards/plants/PotatoMine.svg',
 };
 
 // 加载精灵
 for (const [k,v] of Object.entries(spriteDefs)){
   imgs[k] = [];
-  for (let i = 0; i < v.frames; i++) imgs[k].push(loadImg(frameURL(v.path, i, 2)));
+  var _ext = v.ext || '.png';
+  for (let i = 0; i < v.frames; i++) imgs[k].push(loadImg(frameURL(v.path, i, 2, _ext)));
 }
 for (const [k,v] of Object.entries(zombieDefs)){
   imgs['zombie_'+k] = [];
@@ -564,10 +593,13 @@ function plant(type, r, c){
   G.sun -= d.cost; G.cooldowns[type] = d.cd;
   sfxPlant();
 
-  if (type === "cherry"){ explode(r, c); G.selected = null; return; }
+  if (type === "cherry"){
+    const p = { type, r, c, x:cellCX(c), y:cellCY(r), hp:d.hp, maxHp:d.hp, state:"arming", timer:0, frame:0, frameTimer:0, scaleIn:0, anim:rand(0,6.28), exploded:false };
+    G.plants.push(p); G.occupied[r + "," + c] = p; G.selected = null; return;
+  }
 
   if (type === "potatomine"){
-    const p = { type, r, c, x:cellCX(c), y:cellCY(r), hp:d.hp, maxHp:d.hp, armed:false, armTimer:14, anim:rand(0,6.28), frame:0, frameTimer:0, scaleIn:0 };
+    const p = { type, r, c, x:cellCX(c), y:cellCY(r), hp:d.hp, maxHp:d.hp, state:"buried", timer:14, anim:rand(0,6.28), frame:0, frameTimer:0, scaleIn:0, exploded:false };
     G.plants.push(p); G.occupied[r + "," + c] = p; G.selected = null; return;
   }
 
@@ -667,6 +699,15 @@ function updatePlants(dt){
     p.anim += dt; if (p.scaleIn < 1) p.scaleIn = Math.min(1, p.scaleIn + dt * 4);
     p.frameTimer += dt;
 
+    // 樱桃炸弹：arming 动画 -> 爆炸
+    if (p.type === "cherry" && p.state === "arming"){
+      p.timer += dt;
+      if (p.frameTimer > 0.09){ p.frameTimer = 0; p.frame = (p.frame + 1) % 7; }
+      if (p.timer >= 0.55 && !p.exploded){ p.exploded = true; explode(p.r, p.c); }
+      if (p.timer >= 0.7){ removePlant(p); }
+      continue;
+    }
+
     // 大嘴花消化中
     if (p.type === "chomper"){
       if (p.digestTimer > 0){
@@ -714,10 +755,18 @@ function updatePlants(dt){
       continue;
     }
 
-    // 土豆地雷
+    // 土豆地雷状态机
     if (p.type === "potatomine"){
-      if (!p.armed){ p.armTimer -= dt; if (p.armTimer <= 0){ p.armed = true; p.frame = 0; } }
-      else { for (const z of G.zombies){ if (z.r === p.r && Math.abs(z.x - p.x) < CELL_W * 0.9){ mineExplode(p); break; } } }
+      if (p.state === "exploding"){ p.timer -= dt; if (p.timer <= 0) removePlant(p); continue; }
+      if (p.state !== "armed"){
+        p.timer -= dt;
+        if (p.state === "buried" && p.timer <= 2.5){ p.state = "rising"; p.frame = 0; }
+        else if (p.state === "rising" && p.timer <= 0){ p.state = "armed"; p.frame = 0; }
+        if (p.frameTimer > 0.5 && p.state !== "armed"){ p.frameTimer = 0; p.frame = (p.frame + 1) % 2; }
+        continue;
+      }
+      for (const z of G.zombies){ if (z.r === p.r && Math.abs(z.x - p.x) < CELL_W * 0.9){ p.state = "exploding"; p.timer = 0.5; p.exploded = true; mineExplode(p); break; } }
+      if (p.frameTimer > 0.4 && p.state === "armed"){ p.frameTimer = 0; p.frame = (p.frame + 1) % 2; }
       continue;
     }
 
@@ -965,17 +1014,25 @@ function drawPlants(){
     ctx.translate(p.x + jx, p.y + jy);
     const sc = Math.min(1, p.scaleIn || 1); ctx.scale(sc, sc);
 
-    // 土豆地雷未武装
-    if (p.type === "potatomine" && !p.armed){
-      ctx.globalAlpha = 0.7 + Math.sin(p.anim * 2) * 0.15;
-      ctx.fillStyle = "#8a6a40"; ctx.beginPath(); ctx.arc(0, 8, 14, 0, Math.PI); ctx.fill();
-      ctx.fillStyle = "#6b4a20"; ctx.beginPath(); ctx.ellipse(0, 4, 16, 8, 0, 0, Math.PI*2); ctx.fill();
-      ctx.fillStyle = "#a08050"; ctx.beginPath(); ctx.arc(-4, -2, 5, 0, Math.PI*2); ctx.fill();
-      ctx.fillStyle = "#c0a060"; ctx.beginPath(); ctx.arc(3, -4, 6, 0, Math.PI*2); ctx.fill();
-      ctx.fillStyle = "#6b3a10"; ctx.font = "bold 9px 'Microsoft YaHei',sans-serif"; ctx.textAlign = "center";
-      ctx.fillText(Math.ceil(p.armTimer) + "s", 0, -18);
-      ctx.globalAlpha = 1;
-    } else {
+    // 土豆地雷状态渲染
+    if (p.type === "potatomine"){
+      var pmKey = p.state === "exploding" ? "potatomine_explosion" : (p.state === "armed" ? "potatomine_armed" : (p.state === "rising" ? "potatomine_rising" : "potatomine_buried"));
+      var pmFrames = imgs[pmKey];
+      if (pmFrames && pmFrames.length && pmFrames[0] && pmFrames[0].complete && pmFrames[0].naturalWidth > 0){
+        var pf = pmFrames[0];
+        if (p.state === "buried"){ ctx.globalAlpha = 0.8; ctx.drawImage(pf, -30, -10, 60, 60); ctx.globalAlpha = 1; }
+        else if (p.state === "rising"){ ctx.drawImage(pf, -40, -40, 80, 90); }
+        else if (p.state === "exploding"){ ctx.drawImage(pf, -50, -60, 100, 120); }
+        else { ctx.drawImage(pf, -40, -50, 80, 100); }
+      }
+      if (p.state === "buried" || p.state === "rising"){
+        ctx.fillStyle = "#ffe23a"; ctx.font = "bold 9px Microsoft YaHei,sans-serif"; ctx.textAlign = "center";
+        ctx.fillText(Math.ceil(p.timer) + "s", 0, -26);
+      }
+      ctx.restore();
+      continue;
+    }
+    {
       const spriteKey = getPlantSpriteKey(p);
       const frames = imgs[spriteKey];
       if (frames && frames.length){
@@ -997,20 +1054,6 @@ function drawPlants(){
   }
 }
 
-function getPlantSpriteKey(p){
-  if (p.type === "snowpea") return "peashooter";
-  if (p.type === "gatlingpea"){
-    // shooting animation check
-    return "gatlingpea";
-  }
-  if (p.type === "chomper"){
-    if (p.digestTimer > 0) return "chomper_digest";
-    if (p.eatingAnim > 0) return "chomper_attack";
-    return "chomper";
-  }
-  return p.type;
-}
-
 function drawHP(x, y, w, h, frac, color){
   ctx.fillStyle = "rgba(0,0,0,0.5)"; ctx.fillRect(x-1, y-1, w+2, h+2);
   ctx.fillStyle = "#801010"; ctx.fillRect(x, y, w, h);
@@ -1018,7 +1061,7 @@ function drawHP(x, y, w, h, frac, color){
 }
 
 function drawFallbackPlant(type, x, y, t){
-  ctx.fillStyle = type==="sunflower"?"#ffc800":type==="peashooter"?"#48b838":type==="wallnut"?"#c89848":type==="potatomine"?"#8a5a30":type==="chomper"?"#8844aa":"#d83a3a";
+  ctx.fillStyle = type==="sunflower"?"#ffc800":type==="peashooter"?"#48b838":type==="wallnut"?"#c89848":type==="potatomine"?"#8a5a30":type==="chomper"?"#8844aa":type==="cherry"?"#e83030":"#d83a3a";
   ctx.beginPath(); ctx.arc(x, y-4, 20, 0, 7); ctx.fill();
 }
 
@@ -1212,8 +1255,8 @@ function drawCard(type, x, y){
   const d = PLANTS[type], cd = G.cooldowns[type];
   const ok = G.sun >= d.cost && cd <= 0, sel = G.selected === type;
 
-  const cardKey = type === "snowpea" ? "peashooter" : (type === "potatomine" ? null : type);
-  const cardImg = cardKey ? (imgs.card && imgs.card[cardKey]) : null;
+  const cardKey = getPlantCardKey(type);
+  const cardImg = imgs.card && imgs.card[cardKey];
 
   if (cardImg && cardImg.complete && cardImg.naturalWidth > 0){
     ctx.drawImage(cardImg, x, y, 72, 74);
@@ -1276,9 +1319,13 @@ function drawCarry(){
   const sk = getPlantSpriteKey({ type: G.selected, digestTimer: 0, eatingAnim: 0 });
   const frames = imgs[sk];
   if (G.selected === "potatomine"){
-    ctx.fillStyle="#8a6a40"; ctx.beginPath(); ctx.ellipse(0,4,16,8,0,0,Math.PI*2); ctx.fill();
-    ctx.fillStyle="#a08050"; ctx.beginPath(); ctx.arc(-4,-2,5,0,Math.PI*2); ctx.fill();
-    ctx.fillStyle="#c0a060"; ctx.beginPath(); ctx.arc(3,-4,6,0,Math.PI*2); ctx.fill();
+    var pmP = imgs.potatomine_armed;
+    if (pmP && pmP.length && pmP[0] && pmP[0].complete && pmP[0].naturalWidth > 0){ ctx.drawImage(pmP[0], -40, -50, 80, 100); }
+    else { ctx.fillStyle="#8a6a40"; ctx.beginPath(); ctx.ellipse(0,4,16,8,0,0,Math.PI*2); ctx.fill(); ctx.fillStyle="#a08050"; ctx.beginPath(); ctx.arc(-4,-2,5,0,Math.PI*2); ctx.fill(); ctx.fillStyle="#c0a060"; ctx.beginPath(); ctx.arc(3,-4,6,0,Math.PI*2); ctx.fill(); }
+  } else if (G.selected === "cherry"){
+    var chP = imgs.cherrybomb;
+    if (chP && chP.length && chP[0] && chP[0].complete){ ctx.drawImage(chP[0], -40, -50, 80, 100); }
+    else { drawFallbackPlant(G.selected, 0, 0, 0); }
   } else if (frames && frames.length && frames[0] && frames[0].complete){
     ctx.drawImage(frames[0], -40, -50, 80, 100);
     if (G.selected === "snowpea"){ ctx.globalAlpha=0.25; ctx.fillStyle="#4080e0"; ctx.fillRect(-40,-50,80,100); }

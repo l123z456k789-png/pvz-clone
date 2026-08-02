@@ -109,7 +109,8 @@
 }
 #instructions-modal.hidden,
 #reset-confirm-modal.hidden,
-#about-modal.hidden { display: none; }
+#about-modal.hidden,
+#wechat-modal.hidden { display: none; }
 
 .modal-panel {
   background: linear-gradient(180deg, #4a3820 0%, #2a1a08 100%);
