@@ -3,7 +3,7 @@
    ============================================================ */
 "use strict";
 
-const APP_VERSION = "v1.0.0";
+const APP_VERSION = "v1.0.1";
 
 /* ---------- localStorage 键 ---------- */
 const LS_KEYS = {
@@ -104,6 +104,45 @@ if (startBtn) {
 }
 
 /* ============================================================
+   环境检测
+   ============================================================ */
+function isWeChat() { return /MicroMessenger/i.test(navigator.userAgent); }
+function getFullscreenEnvironment() {
+  return {
+    isWeChat: isWeChat(),
+    fullscreenEnabled: !!(document.fullscreenEnabled || document.webkitFullscreenEnabled),
+    requestFullscreenAvailable: !!(gameContainer.requestFullscreen || gameContainer.webkitRequestFullscreen),
+    currentFullscreenElement: !!(document.fullscreenElement || document.webkitFullscreenElement),
+    immersiveModeActive: document.body.classList.contains("game-immersive-mode"),
+  };
+}
+(function initDebugMode() {
+  if (window.location.search.indexOf("debug=fullscreen") === -1) return;
+  var env = getFullscreenEnvironment();
+  var p = document.createElement("div");
+  p.id = "debug-fullscreen";
+  p.style.cssText = "position:fixed;top:4px;left:4px;z-index:999;background:rgba(0,0,0,0.85);color:#0f0;font:11px monospace;padding:6px 10px;border-radius:4px;max-width:95vw;";
+  var lines = [];
+  for (var k in env) lines.push(k + ": " + env[k]);
+  p.textContent = lines.join(" | ");
+  document.body.appendChild(p);
+})();
+
+function openWeChatGuidance() {
+  var wm = document.getElementById("wechat-modal");
+  if (wm) wm.classList.remove("hidden");
+}
+function copyGameURL() {
+  var url = window.location.href;
+  if (navigator.clipboard && navigator.clipboard.writeText) {
+    navigator.clipboard.writeText(url).then(function () {
+      var btn = document.getElementById("wechat-copy-btn");
+      if (btn) { btn.textContent = "已复制!"; setTimeout(function () { btn.textContent = "复制网址"; }, 2000); }
+    }).catch(function () {});
+  }
+}
+
+/* ============================================================
    全屏系统
    ============================================================ */
 
@@ -146,16 +185,17 @@ function exitGameFullscreen() {
 function toggleGameFullscreen() {
   if (isGameFullscreen()) {
     exitGameFullscreen().catch(function () {});
+  } else if (document.body.classList.contains("game-immersive-mode")) {
+    disableImmersiveMode(); updateFullscreenUI(); resizeGameViewport();
   } else {
-    var support = checkFullscreenSupport();
+    if (isWeChat()) {
+      enableImmersiveMode(); updateFullscreenUI(); resizeGameViewport(); openWeChatGuidance(); return;
+    }
     enterGameFullscreen().then(function () {
       tryLockOrientation();
     }).catch(function () {
-      /* 原生全屏失败 → CSS 沉浸模式 */
-      if (!document.body.classList.contains("game-immersive-mode")) {
-        enableImmersiveMode();
-      }
-      console.warn("Native fullscreen unavailable, using CSS immersive mode.");
+      if (!document.body.classList.contains("game-immersive-mode")) enableImmersiveMode();
+      if (isWeChat()) openWeChatGuidance();
     });
   }
 }
@@ -190,17 +230,11 @@ function disableImmersiveMode() {
 
 /* 从启动页进入全屏 */
 function tryEnterFullscreenOnStart(clickEvent) {
+  if (isWeChat()) { enableImmersiveMode(); updateFullscreenUI(); resizeGameViewport(); return; }
   var support = checkFullscreenSupport();
   if (support.native) {
-    enterGameFullscreen().then(function () {
-      tryLockOrientation();
-    }).catch(function () {
-      enableImmersiveMode();
-    });
-  } else {
-    enableImmersiveMode();
-    showIphonePWATipIfNeeded();
-  }
+    enterGameFullscreen().then(tryLockOrientation).catch(function () { enableImmersiveMode(); });
+  } else { enableImmersiveMode(); showIphonePWATipIfNeeded(); }
   resizeGameViewport();
 }
 
@@ -208,22 +242,16 @@ function tryEnterFullscreenOnStart(clickEvent) {
 function updateFullscreenUI() {
   var isFull = isGameFullscreen();
   var isImmersive = document.body.classList.contains("game-immersive-mode");
+  var inWeChat = isWeChat();
   var icon = isFull ? "✕" : (isImmersive ? "✕" : "⛶");
-  var title = isFull ? "退出全屏" : (isImmersive ? "退出沉浸模式" : "全屏");
-
-  if (fullscreenBtn) {
-    fullscreenBtn.textContent = icon;
-    fullscreenBtn.title = title;
-    fullscreenBtn.setAttribute("aria-label", title);
-    fullscreenBtn.setAttribute("aria-pressed", isFull || isImmersive ? "true" : "false");
-  }
+  var title = isFull ? "退出全屏" : (isImmersive ? "退出沉浸布局" : (inWeChat ? "沉浸布局（微信不支持原生全屏）" : "全屏"));
+  if (fullscreenBtn) { fullscreenBtn.textContent = icon; fullscreenBtn.title = title; fullscreenBtn.setAttribute("aria-label", title); fullscreenBtn.setAttribute("aria-pressed", isFull || isImmersive ? "true" : "false"); }
   if (startFullscreenBtn) {
+    var sfEl = startFullscreenBtn.querySelector(".tool-label");
+    if (sfEl) sfEl.textContent = inWeChat ? "沉浸" : "全屏";
     startFullscreenBtn.setAttribute("aria-pressed", isFull || isImmersive ? "true" : "false");
   }
-
-  if (!isFull && !isImmersive) {
-    disableImmersiveMode();
-  }
+  if (!isFull && !isImmersive) disableImmersiveMode();
 }
 
 /* 全屏事件监听 */
