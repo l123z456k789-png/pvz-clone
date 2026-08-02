@@ -1,49 +1,63 @@
-# 植物大战僵尸 — 浏览器版复刻
+# 植物大战僵尸 · Plants vs Zombies (Browser Edition)
 
-基于 HTML5 Canvas 的植物大战僵尸复刻，纯前端实现。
+**HTML5 Canvas PvZ clone** — 5×9 grid tower defense with 9 plant types, zombie animations, sun economy. Pure frontend.
 
-## 运行
+**浏览器版 PvZ 复刻** — 5×9 网格塔防，9 种植物，僵尸动画，阳光经济。纯前端。
 
-双击 `index.html`，浏览器直接打开即可游玩。
+---
 
-## 玩法
+## Run · 运行
 
-- 5×9 网格战场
-- 9 种植物：向日葵、豌豆射手、坚果墙、寒冰射手、樱桃炸弹、双发射手、土豆地雷、大嘴花、加特林豌豆
-- 僵尸带行走/攻击/死亡动画
-- 阳光经济 + 卡牌选择
-- 割草机防线
+Double-click `index.html` — opens directly in your browser.
 
-## 操作
+---
 
-| 操作 | 说明 |
-|------|------|
-| 点击卡牌 | 选择植物 |
-| 点击格子 | 种植 |
-| 点击阳光 | 收集 |
+## Gameplay · 玩法
 
-## 文件
+- 5×9 grid battlefield
+- 9 plant types: Sunflower, Peashooter, Wall-nut, Snow Pea, Cherry Bomb, Repeater, Potato Mine, Chomper, Gatling Pea
+- Zombies with walk/attack/die animations
+- Sun economy + card/seed selection
+- Lawn mower defense line
+
+---
+
+## Controls · 操作
+
+| Action | How |
+|--------|-----|
+| Select plant · 选植物 | Click a seed card |
+| Plant · 种植 | Click a grid cell |
+| Collect sun · 收阳光 | Click falling suns |
+
+---
+
+## Files · 文件
 
 ```
 植物大战僵尸/
-├── index.html              # 游戏主体（单文件 ~48KB）
-├── ASSET_ATTRIBUTION.md    # 素材来源说明
+├── index.html              # Full game (~48KB single file)
+├── ASSET_ATTRIBUTION.md    # Asset source documentation
 └── README.md
 ```
 
-## 素材版权
+---
 
-`images/` 目录中的精灵图来源于 PvZ Wiki 和 Spriters Resource，版权属 PopCap/EA。本项目仅供学习和技术演示。
+## Asset Copyright · 素材版权
 
-详见 [ASSET_ATTRIBUTION.md](ASSET_ATTRIBUTION.md)。
+`images/` sprites sourced from PvZ Wiki and Spriters Resource. Copyright © PopCap Games / Electronic Arts. **For educational and technical demonstration only.** See [ASSET_ATTRIBUTION.md](ASSET_ATTRIBUTION.md).
 
-## 已知限制
+---
 
-- 单文件实现，代码约 1200 行，未做模块拆分
-- 关卡状态机为隐式双重点击逻辑
-- 无移动端适配
-- 无音效
+## Limitations · 已知限制
+
+- Single monolithic file (~1200 lines), not modularized
+- Implicit double-click level state machine
+- No mobile adaptation
+- No sound effects
+
+---
 
 ## License
 
-MIT（仅限代码部分。图片素材版权属各自权利人）
+MIT (code only; image assets © respective rights holders)
