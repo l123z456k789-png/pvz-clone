@@ -21,20 +21,11 @@ jobs:
       - name: Checkout repository
         uses: actions/checkout@v4
 
-      - name: Setup Wrangler authentication
-        env:
-          OAUTH: ${{ secrets.WRANGLER_OAUTH_TOKEN }}
-          REFRESH: ${{ secrets.WRANGLER_REFRESH_TOKEN }}
-        run: |
-          mkdir -p "${HOME}/.config/.wrangler/config"
-          printf 'oauth_token = "%s"\nrefresh_token = "%s"\n' \
-            "$OAUTH" "$REFRESH" \
-            > "${HOME}/.config/.wrangler/config/default.toml"
-
       - name: Install Wrangler
         run: npm install -g wrangler
 
       - name: Deploy to Cloudflare Pages
         env:
+          CLOUDFLARE_API_TOKEN: ${{ secrets.CLOUDFLARE_API_TOKEN }}
           CLOUDFLARE_ACCOUNT_ID: ${{ secrets.CLOUDFLARE_ACCOUNT_ID }}
         run: wrangler pages deploy . --project-name=pvz-bimubai --branch=main
