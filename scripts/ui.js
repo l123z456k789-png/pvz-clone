@@ -128,7 +128,7 @@ if (githubBtn) {
 function updateFullscreenIcon() {
   if (!fullscreenBtn) return;
   const isFull = !!(document.fullscreenElement || document.webkitFullscreenElement);
-  fullscreenBtn.textContent = isFull ? "⛶" : "⛶";
+  fullscreenBtn.textContent = isFull ? "✕" : "⛶";
   fullscreenBtn.title = isFull ? "退出全屏" : "全屏";
   fullscreenBtn.style.opacity = isFull ? "1" : "0.7";
 }
